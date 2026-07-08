@@ -58,3 +58,15 @@ jobs:
 
       - name: Pipeline Completed
         run: echo "CI-CD Pipeline completed successfully."
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy to Azure Container Apps
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          containerAppName: ${{ secrets.AZURE_CONTAINERAPP_NAME }}
+          resourceGroup: ${{ secrets.AZURE_RESOURCE_GROUP }}
+          imageToDeploy: ${{ secrets.DOCKER_USERNAME }}/employee-management-system:latest
