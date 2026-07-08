@@ -18,53 +18,43 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the repository
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # Verify required project files
       - name: Verify Project Files
         run: |
           test -f index.html
           test -f Dockerfile
 
-      # Initialize CodeQL
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: javascript
 
-      # Autobuild
       - name: Autobuild
         uses: github/codeql-action/autobuild@v3
 
-      # Analyze with CodeQL
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
 
-      # Set up Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # Login to Docker Hub
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Build Docker Image
       - name: Build Docker Image
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/employee-management-system:${{ github.sha }} .
           docker tag ${{ secrets.DOCKER_USERNAME }}/employee-management-system:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}/employee-management-system:latest
 
-      # Push Docker Image
       - name: Push Docker Image
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/employee-management-system:${{ github.sha }}
           docker push ${{ secrets.DOCKER_USERNAME }}/employee-management-system:latest
 
-      # Success Message
       - name: Pipeline Completed
-        run: echo "CI/CD Pipeline completed successfully."
+        run: echo "CI-CD Pipeline completed successfully."
